@@ -1,9 +1,7 @@
-name: CI-CD Task Manager
+name: Deploy static site to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
-  pull_request:
     branches: ["main"]
 
 permissions:
@@ -12,40 +10,17 @@ permissions:
   id-token: write
 
 jobs:
-  build_and_test:
+  deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
-      - name: Install dependencies
-        run: |
-          if [ -f package-lock.json ]; then
-            npm ci
-          else
-            npm install
-          fi
-
-      - name: Run tests
-        run: |
-          echo "No tests yet – build OK"
-
-      - name: Upload Pages artifact
+      - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: .
 
-  deploy:
-    needs: build_and_test
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
-
-    steps:
       - name: Deploy to GitHub Pages
         uses: actions/deploy-pages@v4
